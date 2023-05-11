@@ -4,16 +4,20 @@
   "description": "22:22 enjoyer",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node src/Bot.ts"
+    "start": "ts-node src/Bot.ts",
+    "deploy": "ts-node deploy.ts"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "discord.js": "^14.9.0",
-    "dotenv": "^16.0.3"
+    "dotenv": "^16.0.3",
+    "node-ssh": "^13.1.0",
+    "ssh-deploy-release": "^4.0.1"
   },
   "devDependencies": {
     "@types/node": "^18.16.3",
+    "@types/ssh2": "^1.11.11",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4"
   },

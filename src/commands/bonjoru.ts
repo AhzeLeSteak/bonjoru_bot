@@ -6,6 +6,6 @@ export const Bonjoru: Command = {
     description: 'Commande de test',
     type: 1,
     run: async (client, interaction) => {
-        await interaction.followUp({content: 'Bonjoru à toi aussi !'});
+        await interaction.followUp({content: 'Bonjoru !'});
     }
 }

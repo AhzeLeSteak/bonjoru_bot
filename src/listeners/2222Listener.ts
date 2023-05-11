@@ -21,14 +21,16 @@ export default (client: Client) => {
         if(!message.is_content_2222() || !message.created_at_2222())
             return;
 
-        users.get(chanID).add(message.author.id);
+        if(!users.has(chanID))
+            users.set(chanID, new Set());
+        users.get(chanID)!.add(message.author.id);
 
         if(waiting.get(chanID)) return;
 
         waiting.set(message.id, true);
         const channel = await message.channel.fetch() as TextChannel;
         setTimeout(() => {
-            const tags = [...users.get(chanID).values()].map(id => `<@${id}>`);
+            const tags = [...users.get(chanID)!.values()].map(id => `<@${id}>`);
             channel.send(`GG ${tags.join(' ') !}`);
             waiting.set(chanID, false);
             users.delete(chanID)
