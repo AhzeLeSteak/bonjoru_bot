@@ -11,31 +11,28 @@ export const Streak: Command = {
         //const channel = await interaction.channel.fetch() as TextChannel;
         const channel = (await client.channels.fetch('952560653472759860')) as TextChannel;
         const streak = await getStreakOfUser(channel, interaction.user);
-        await interaction.followUp({content: `Streak de ${interaction.user.username}: **${streak}**`});
+        await interaction.followUp({content: `Streak de ${interaction.user.username}: **${streak.length}**`});
     }
 }
 
 const getStreakOfUser = async(channel: TextChannel, user: User) => {
-
-
     let start_date = new Date();
     const today_at_2222 = new Date();
     today_at_2222.setHours(22, 22, 0, 0);
-    if(start_date > today_at_2222)
+    if(start_date <= today_at_2222)
         start_date = start_date.dayBefore();
     start_date.setHours(22, 22, 0, 0);
-    start_date = start_date.dayBefore();
-
 
     let messages = await lots_of_messages_getter(channel, start_date);
 
-    let i;
-    for(i = 0; has_correct_message([...messages.values()], user); i++){
+    const dates_valides: Date[] = [];
+    while(has_correct_message([...messages.values()], user)){
+        dates_valides.push(start_date);
         start_date = start_date.dayBefore();
         messages = await lots_of_messages_getter(channel, start_date, messages.last()!.id);
     }
 
-    return i;
+    return dates_valides;
 };
 
 const has_correct_message = (messages: Message<true>[], user: User) => {

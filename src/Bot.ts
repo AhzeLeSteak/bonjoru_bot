@@ -1,11 +1,9 @@
 import {Client} from "discord.js";
 import dotenv from "dotenv";
 import path from "path";
-import ready from "./listeners/ready";
-import interactionCreate from "./listeners/interactionCreate";
-import copListener from "./listeners/copListener";
-import nexaleListener from "./listeners/nexaleListener";
-import _2222Listener from "./listeners/2222Listener";
+import ready from "./listeners/readyListener";
+import interactionCreate from "./listeners/interactionListener";
+import messageListener from "./listeners/messageListener";
 
 const root = path.resolve(__dirname, '../.env')
 dotenv.config({path: root})
@@ -20,8 +18,6 @@ const client = new Client({
 
 ready(client);
 interactionCreate(client);
-copListener(client);
-_2222Listener(client);
-nexaleListener(client);
+messageListener(client);
 
 client.login(token);
