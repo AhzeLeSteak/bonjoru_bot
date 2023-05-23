@@ -19,7 +19,7 @@ export const tiktokHandler: MessageHandler = async(message) => {
 
         const channel = await message.channel.fetch() as TextChannel;
         await message.delete();
-        await channel.send(fetchVideo.playURL!);
+        await channel.send(`${message.author.username} a envoyé : ${fetchVideo.playURL}`);
     }
     catch (e){
         console.error(e);

@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 const {NodeSSH} = require('node-ssh')
 const Application = require('ssh-deploy-release');
 
-const root = path.resolve(__dirname, '../.env')
+const root = path.resolve(__dirname, './.env')
 dotenv.config({path: root})
 
 const options = {
