@@ -22,5 +22,6 @@ const handleSlashCommand = async (client: Client, interaction: ChatInputCommandI
     }
     catch (e){
         console.error(e);
+        await interaction.deleteReply('Une erreur est survenue :( ')
     }
 };

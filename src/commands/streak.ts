@@ -11,7 +11,7 @@ export const Streak: Command = {
         if(!interaction.channel)
             return;
         const channel = await interaction.channel.fetch() as TextChannel;
-        //const channel = (await client.channels.fetch('process.env.CHANNEL_2222_ID')) as TextChannel;
+        //const channel = (await client.channels.fetch(process.env.CHANNEL_2222_ID)) as TextChannel;
         const streak = await getStreakOfUser(channel, interaction.user);
         await interaction.followUp({content: `Streak de ${interaction.user.username}: **${streak.length}**`});
     }
@@ -39,7 +39,7 @@ const getStreakOfUser = async(channel: TextChannel, user: User) => {
 };
 
 const has_correct_message = (messages: Message<true>[], user: User) =>
-    messages.some(m => m.author.id === user.id && m.is_content_2222())
+    messages.some(m => m.author.id === user.id && m.is_content_2222() && m.created_at_2222())
 
 async function get_messages_until(channel: TextChannel, until: Date, from ?: Snowflake) {
     let acc: Message<true>[] = [];
