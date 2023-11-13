@@ -4,10 +4,9 @@ import {copHandler} from "../message_handlers/copHandler";
 import {nexaleHandler} from "../message_handlers/nexaleHandler";
 import {vingtDeuxHandler} from "../message_handlers/vingtDeuxHandler";
 import {theGameHandler} from "../message_handlers/theGameHandler";
-import {tiktokHandler} from "../message_handlers/tiktokHandler";
 
 export type MessageHandler = (m: Message) => Promise<void>;
-const MESSAGE_HANDLERS: MessageHandler[] = [copHandler, nexaleHandler, theGameHandler, tiktokHandler, vingtDeuxHandler];
+const MESSAGE_HANDLERS: MessageHandler[] = [copHandler, nexaleHandler, theGameHandler, vingtDeuxHandler];
 
 export default (client: Client) => {
     client.on('messageCreate', async(message) => {

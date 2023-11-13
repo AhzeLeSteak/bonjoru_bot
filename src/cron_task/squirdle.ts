@@ -2,7 +2,8 @@ import "../utils/Date.extension";
 import {Client, TextChannel} from "discord.js";
 
 const HEURE_ENVOI = 8;
-const URL = 'https://squirdle.fireblend.com/daily.html';
+const URL_SQUIRDLE = 'https://squirdle.fireblend.com/daily.html';
+const URL_LOLDLE = 'https://loldle.net';
 
 export default async(client: Client) => {
     const channel = (await client.channels.fetch(process.env.CHANNEL_2222_ID!)) as TextChannel;
@@ -20,7 +21,7 @@ const send_squirdle = (channel: TextChannel) =>  {
     console.log(`Prochain envoi du lien squirdle: ${next_send_date.toLocaleString()}`)
 
     setTimeout(() => {
-        channel.send(`C'est l'heure de Squirdler !\n${URL}`)
+        channel.send(`Bonjoru totu le monde !\nPoru bien commencer la journée :\n${URL_SQUIRDLE}\n${URL_LOLDLE}`)
         send_squirdle(channel)
     }, next_send_date.getTime() - now.getTime())
 

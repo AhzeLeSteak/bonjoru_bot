@@ -53,9 +53,11 @@ async function main(){
     );
 
 
+    console.log('Installing node modules...');
     await sudo(`npm i`, 'app');
     console.log('Installed node modules');
 
+    console.log('Restarting service...');
     await sudo(`sudo -S systemctl restart bonjoru_bot`);
     console.log('Service restarted !');
     process.exit()

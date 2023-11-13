@@ -1,4 +1,4 @@
-import {Client} from "discord.js";
+import {Client, TextChannel} from "discord.js";
 import dotenv from "dotenv";
 import path from "path";
 import ready from "./listeners/readyListener";
@@ -21,3 +21,4 @@ interactionCreate(client);
 messageListener(client);
 
 client.login(token);
+console.log(`bonjoru_bot started`);

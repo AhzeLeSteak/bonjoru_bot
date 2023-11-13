@@ -1,7 +1,9 @@
-interface Date{
-    dayBefore(): Date,
-    dayAfter(): Date,
-    nextMinute(): Date,
+declare global{
+    interface Date{
+        dayBefore(): Date,
+        dayAfter(): Date,
+        nextMinute(): Date,
+    }
 }
 
 Date.prototype.dayBefore = function (){

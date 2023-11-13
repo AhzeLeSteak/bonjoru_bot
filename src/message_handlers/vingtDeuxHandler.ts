@@ -13,6 +13,8 @@ export const vingtDeuxHandler: MessageHandler = async(message) => {
     if(!message.is_content_2222() || !message.created_at_2222())
         return;
 
+    message.react(process.env.NERD_EMOTE as string);
+
     if(!users.has(chanID))
         users.set(chanID, new Set());
     users.get(chanID)!.add(message.author.id);
@@ -22,6 +24,7 @@ export const vingtDeuxHandler: MessageHandler = async(message) => {
     waiting.set(message.id, true);
     const channel = await message.channel.fetch() as TextChannel;
     setTimeout(() => {
+        if(!users.get(chanID)) return;
         const tags = [...users.get(chanID)!.values()].map(id => `<@${id}>`);
         channel.send(`GG ${tags.join(' ') !}`);
         waiting.set(chanID, false);
