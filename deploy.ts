@@ -1,5 +1,5 @@
-import path from "path";
-import dotenv from "dotenv";
+import * as path from "path";
+import * as dotenv from "dotenv";
 
 const {NodeSSH} = require('node-ssh')
 const Application = require('ssh-deploy-release');

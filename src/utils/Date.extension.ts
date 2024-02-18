@@ -1,24 +1,18 @@
-declare global{
-    interface Date{
-        dayBefore(): Date,
-        dayAfter(): Date,
-        nextMinute(): Date,
-    }
-}
 
-Date.prototype.dayBefore = function (){
-    const dayBefore = new Date(this);
-    dayBefore.setDate(this.getDate()-1);
+
+export const dayBefore = function (d: Date){
+    const dayBefore = new Date(d);
+    dayBefore.setDate(d.getDate()-1);
     return dayBefore;
 }
-Date.prototype.dayAfter = function (){
-    const dayAfter = new Date(this);
-    dayAfter.setDate(this.getDate()+1);
+export const dayAfter = function (d){
+    const dayAfter = new Date(d);
+    dayAfter.setDate(d.getDate()+1);
     return dayAfter;
 }
 
-Date.prototype.nextMinute = function (){
-    const nextMinute = new Date(this);
-    nextMinute.setMinutes(this.getMinutes()+1, 0, 0);
+export const nextMinute = function (d){
+    const nextMinute = new Date(d);
+    nextMinute.setMinutes(d.getMinutes()+1, 0, 0);
     return nextMinute;
 }

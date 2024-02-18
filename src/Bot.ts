@@ -1,6 +1,6 @@
 import {Client, TextChannel} from "discord.js";
-import dotenv from "dotenv";
-import path from "path";
+import * as dotenv from "dotenv";
+import * as path from "path";
 import ready from "./listeners/readyListener";
 import interactionCreate from "./listeners/interactionListener";
 import messageListener from "./listeners/messageListener";

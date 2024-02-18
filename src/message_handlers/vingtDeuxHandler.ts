@@ -2,6 +2,7 @@ import {Snowflake, TextChannel} from "discord.js";
 import {MessageHandler} from "../listeners/messageListener";
 import "../utils/Date.extension";
 import "../utils/Message.extension";
+import {nextMinute} from "../utils/Date.extension";
 
 let waiting = new Map<Snowflake, boolean>;
 let users = new Map<Snowflake, Set<Snowflake>>;
@@ -29,5 +30,5 @@ export const vingtDeuxHandler: MessageHandler = async(message) => {
         channel.send(`GG ${tags.join(' ') !}`);
         waiting.set(chanID, false);
         users.delete(chanID)
-    }, message.createdAt.nextMinute().getTime() - message.createdAt.getTime())
+    }, nextMinute(message.createdAt).getTime() - message.createdAt.getTime())
 }

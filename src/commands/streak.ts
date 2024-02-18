@@ -2,6 +2,7 @@ import {Command} from "./Command";
 import {Collection, FetchMessagesOptions, Message, Snowflake, TextChannel, User} from "discord.js";
 import "../utils/Date.extension";
 import "../utils/Message.extension";
+import {dayBefore} from "../utils/Date.extension";
 
 export const Streak: Command = {
     name: 'streak',
@@ -17,12 +18,12 @@ export const Streak: Command = {
     }
 }
 
-const getStreakOfUser = async(channel: TextChannel, user: User) => {
+export const getStreakOfUser = async(channel: TextChannel, user: User) => {
     let next22h22 = new Date();
     const today_at_2222 = new Date();
     today_at_2222.setHours(22, 22, 0, 0);
     if(next22h22 <= today_at_2222)
-        next22h22 = next22h22.dayBefore();
+        next22h22 = dayBefore(next22h22);
     next22h22.setHours(22, 22, 0, 0);
 
     let messages = await get_messages_until(channel, next22h22);
@@ -30,7 +31,7 @@ const getStreakOfUser = async(channel: TextChannel, user: User) => {
     const dates_valides: Date[] = [];
     while(has_correct_message(messages, user)){
         dates_valides.push(next22h22);
-        next22h22 = next22h22.dayBefore();
+        next22h22 = dayBefore(next22h22);
         const last_message = messages.sort((a, b) => a.createdAt > b.createdAt ? 1 : -1)[0];
         messages = await get_messages_until(channel, next22h22, last_message.id);
     }
