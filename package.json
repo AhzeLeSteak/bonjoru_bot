@@ -2,13 +2,11 @@
   "name": "bonjoru_bot",
   "version": "1.0.0",
   "description": "22:22 enjoyer",
-  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "start": "ts-node src/Bot.ts",
-    "deploy": "ts-node deploy.ts"
+    "start": "node src/Bot.js",
+    "deploy": "node deploy.js"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "canvas": "^2.11.2",
     "discord.js": "^14.9.0",
@@ -16,44 +14,13 @@
     "fs": "^0.0.1-security",
     "gif-encoder-2": "^1.0.5",
     "node-ssh": "^13.1.0",
-    "sharp": "^0.33.2",
-    "ssh-deploy-release": "^4.0.1",
+    "sharp": "^0.32.6",
+    "ssh-deploy-release": "^4.0.1"
   },
   "devDependencies": {
     "@types/node": "^18.16.3",
     "@types/ssh2": "^1.11.11",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4"
-  },
-  "compilerOptions": {
-    "target": "es2020",
-    "module": "commonjs",
-    "rootDir": "./src/",
-    "outDir": "./dist/",
-    "strict": true,
-    "moduleResolution": "node",
-    "importHelpers": true,
-    "experimentalDecorators": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true,
-    "forceConsistentCasingInFileNames": true,
-    "removeComments": true,
-    "typeRoots": [
-      "node_modules/@types"
-    ],
-    "sourceMap": false,
-    "baseUrl": "./"
-  },
-  "files": [
-    "src/Bot.ts"
-  ],
-  "include": [
-    "./**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  }
 }

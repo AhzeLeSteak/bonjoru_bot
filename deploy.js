@@ -1,10 +1,10 @@
 import * as path from "path";
 import * as dotenv from "dotenv";
 
-const {NodeSSH} = require('node-ssh')
-const Application = require('ssh-deploy-release');
+import {NodeSSH} from 'node-ssh';
+import Application from 'ssh-deploy-release';
 
-const root = path.resolve(__dirname, './.env')
+const root = path.resolve('./.env')
 dotenv.config({path: root})
 
 const options = {
@@ -31,7 +31,7 @@ async function main(){
         password: process.env.DEPLOY_PASSWORD,
     });
 
-    const sudo = async(command: string, relative_path = '') => {
+    const sudo = async(command, relative_path = '') => {
         const {stderr} = await ssh.exec(`sudo -S ${command}`, [], {
             cwd: `${process.env.DEPLOY_PATH}/${relative_path}`,
             stdin: `${process.env.DEPLOY_PASSWORD}\n\n`,
@@ -45,7 +45,7 @@ async function main(){
     console.log('Erase previous files');
 
     const deployer = new Application(options);
-    await new Promise<void>(resolve =>
+    await new Promise(resolve =>
         deployer.deployRelease(() => {
             console.log('Sources deployed !')
             resolve();

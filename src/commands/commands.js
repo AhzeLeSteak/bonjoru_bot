@@ -1,7 +1,6 @@
-import {Bonjoru} from "./bonjoru";
-import {Command} from "./Command";
-import {Streak} from "./streak";
-import {Streak2} from "./streak2";
-import {Pet} from "./pet";
+import {BONJORU} from './bonjoru.js';
+import {STREAK} from './streak.js';
+import {STREAK2} from './streak2.js';
+import {PET} from './pet.js';
 
-export const COMMANDS: Command[] = [Bonjoru, Streak, Streak2, Pet];
+export const COMMANDS = [BONJORU, STREAK, STREAK2, PET];

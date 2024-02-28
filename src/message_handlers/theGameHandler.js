@@ -1,8 +1,4 @@
-import "../utils/Date.extension";
-import "../utils/Message.extension";
-import {MessageHandler} from "../listeners/messageListener";
-
-export const theGameHandler: MessageHandler = async(message) => {
+export default async(message) => {
     const random = Math.ceil(Math.random()*8192) ;
     console.log(`Randomz ${message.author.username} - ${random}`)
     if(random !== 666)

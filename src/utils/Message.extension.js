@@ -1,14 +1,5 @@
-import {Message} from "discord.js";
-
-declare module 'discord.js'{
-    interface Message{
-        created_at_2222(): boolean,
-        is_content_2222(): boolean
-    }
-}
-
-Message.prototype.created_at_2222 = function (){
-    const created_at = this.createdAt;
+export const created_at_2222 = function (message){
+    const created_at = message.createdAt;
     const min = new Date(created_at);
     min.setHours(22, 22, 0, 0);
     const max = new Date(created_at);
@@ -23,6 +14,6 @@ const ACCEPTED_MESSAGES = [
     '22h22',
 ];
 
-Message.prototype.is_content_2222 = function(){
-    return ACCEPTED_MESSAGES.includes(this.content.replace(" ", ""))
+export const is_content_2222 = function(message){
+    return ACCEPTED_MESSAGES.includes(message.content.replace(" ", ""))
 }

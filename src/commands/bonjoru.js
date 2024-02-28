@@ -1,7 +1,4 @@
-import {Command} from "./Command";
-
-
-export const Bonjoru: Command = {
+export const BONJORU = {
     name: 'bonjoru',
     description: 'Commande de test',
     type: 1,

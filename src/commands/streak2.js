@@ -1,17 +1,13 @@
-import {Command} from "./Command";
-import {TextChannel} from "discord.js";
-import "../utils/Date.extension";
-import "../utils/Message.extension";
-import {getStreakOfUser} from "./streak";
+import {getStreakOfUser} from './streak.js';
 
-export const Streak2: Command = {
+export const STREAK2 = {
     name: '2streak',
     description: 'Comptabilise 2 votre 2 streak 2 actuel 2',
     type: 1,
     run: async (client, interaction) => {
         if(!interaction.channel)
             return;
-        const channel = await interaction.channel.fetch() as TextChannel;
+        const channel = await interaction.channel.fetch();
         //const channel = (await client.channels.fetch(process.env.CHANNEL_2222_ID)) as TextChannel;
         const streak = await getStreakOfUser(channel, interaction.user);
         await interaction.followUp({content: `Streak de ${interaction.user.username}: **${pretty2(streak.length)}** (${streak.length})`});
@@ -19,7 +15,7 @@ export const Streak2: Command = {
 }
 
 
-function getMaxPowerOfTwo(n: number){
+function getMaxPowerOfTwo(n){
     let i = 0;
     while(n >> 1 > 0){
         n >>= 1;
@@ -28,11 +24,11 @@ function getMaxPowerOfTwo(n: number){
     return i;
 }
 
-function parentheses(n_str: any){
+function parentheses(n_str){
     return !isNaN(n_str) ? n_str : `(${n_str})`
 }
 
-function pretty2(n: number, level = 0): string{
+function pretty2(n, level = 0){
     if(n === 0)
         return '2-2'
     if(n === 1)

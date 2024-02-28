@@ -1,6 +1,5 @@
-import * as Fs from 'fs'
+import * as Fs from 'fs';
 import * as Https from 'https'
-
 /**
  * Download a file from the given `url` into the `targetFile`.
  *
@@ -9,7 +8,7 @@ import * as Https from 'https'
  *
  * @returns {Promise<void>}
  */
-export async function downloadFile (url: string, targetFile: string): Promise<string> {
+export async function downloadFile (url, targetFile) {
     return await new Promise((resolve, reject) => {
         Https.get(url, response => {
             const code = response.statusCode ?? 0
@@ -29,7 +28,7 @@ export async function downloadFile (url: string, targetFile: string): Promise<st
             const fileWriter = Fs
                 .createWriteStream(targetFile)
                 .on('finish', () => {
-                    resolve(fileWriter.path as string)
+                    resolve(fileWriter.path)
                 })
 
             response.pipe(fileWriter)

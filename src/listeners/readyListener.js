@@ -1,8 +1,7 @@
-import {Client} from "discord.js";
-import {COMMANDS} from "../commands/commands";
-import squirdle from "../cron_task/squirdle";
+import {squirdle} from '../cron_task/squirdle.js';
+import {COMMANDS} from "../commands/commands.js";
 
-export default (client: Client) => {
+export const readyListener = (client) => {
     client.on('ready', async() => {
         if(!client.user || !client.application)
             return;

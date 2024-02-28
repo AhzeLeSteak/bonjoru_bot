@@ -1,14 +1,15 @@
-import {Client, TextChannel} from "discord.js";
-import * as dotenv from "dotenv";
-import * as path from "path";
-import ready from "./listeners/readyListener";
-import interactionCreate from "./listeners/interactionListener";
-import messageListener from "./listeners/messageListener";
+import {Client} from 'discord.js';
+import dotenv from 'dotenv';
+import path from 'path';
 
-const root = path.resolve(__dirname, '../.env')
+import {readyListener} from './listeners/readyListener.js';
+import messageListener from './listeners/messageListener.js';
+import interactionCreate from './listeners/interactionListener.js'
+
+const root = path.resolve('./.env')
 dotenv.config({path: root})
 
-const token = process.env.token as string;
+const token = process.env.token;
 console.log(`Parsing ${root}`);
 
 
@@ -16,7 +17,7 @@ const client = new Client({
     intents: [1, 1<<1, 1<<3, 1<<9, 1<<10, 1<<12]
 });
 
-ready(client);
+readyListener(client);
 interactionCreate(client);
 messageListener(client);
 

@@ -1,17 +1,15 @@
-import "../utils/Date.extension";
-import {Client, TextChannel} from "discord.js";
-import {dayAfter} from "../utils/Date.extension";
+import {dayAfter} from '../utils/Date.extension.js';
 
 const HEURE_ENVOI = 8;
 const URL_SQUIRDLE = 'https://squirdle.fireblend.com/daily.html';
 const URL_LOLDLE = 'https://loldle.net';
 
-export default async(client: Client) => {
-    const channel = (await client.channels.fetch(process.env.CHANNEL_2222_ID!)) as TextChannel;
+export const squirdle = async(client) => {
+    const channel = (await client.channels.fetch(process.env.CHANNEL_2222_ID));
     send_squirdle(channel);
 }
 
-const send_squirdle = (channel: TextChannel) =>  {
+const send_squirdle = (channel) =>  {
     const now = new Date();
     let next_send_date = new Date();
     //next_send_date.setMinutes(now.getMinutes()+1, 0, 0);

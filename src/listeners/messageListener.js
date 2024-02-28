@@ -1,14 +1,11 @@
-import {Client, Message} from "discord.js";
-import "../utils/Date.extension";
-import {copHandler} from "../message_handlers/copHandler";
-import {nexaleHandler} from "../message_handlers/nexaleHandler";
-import {vingtDeuxHandler} from "../message_handlers/vingtDeuxHandler";
-import {theGameHandler} from "../message_handlers/theGameHandler";
+import copHandler from '../message_handlers/copHandler.js';
+import nexaleHandler from '../message_handlers/nexaleHandler.js';
+import vingtDeuxHandler from '../message_handlers/vingtDeuxHandler.js';
+import theGameHandler from '../message_handlers/theGameHandler.js';
 
-export type MessageHandler = (m: Message) => Promise<void>;
-const MESSAGE_HANDLERS: MessageHandler[] = [copHandler, nexaleHandler, theGameHandler, vingtDeuxHandler];
+const MESSAGE_HANDLERS = [copHandler, nexaleHandler, theGameHandler, vingtDeuxHandler];
 
-export default (client: Client) => {
+export default (client) => {
     client.on('messageCreate', async(message) => {
         if(message.author.bot || !message.inGuild())
             return;

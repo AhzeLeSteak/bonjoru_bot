@@ -1,9 +1,8 @@
-import {Command} from "./Command";
-import {createCanvas, loadImage} from "canvas";
-import * as GIFEncoder from "gif-encoder-2";
-import * as sharp from "sharp";
+import {createCanvas, loadImage} from 'canvas';
+import GIFEncoder from 'gif-encoder-2';
+import sharp from 'sharp';
 
-export const Pet: Command = {
+export const PET = {
     name: 'pet',
     description: 'Exprime ton amour à ton ami (:',
     type: 1,
@@ -17,7 +16,7 @@ export const Pet: Command = {
         const user = interaction.options.data.length
             ? await interaction.options.data[0].user.fetch()
             : await interaction.user.fetch();
-        const url = user.avatarURL()!;
+        const url = user.avatarURL();
         const img = await downloadImage(url);
         const gif_name = await createGif(img);
         return interaction.followUp({files: [{attachment: gif_name, name: `$pet_${user.username}.gif`}]});

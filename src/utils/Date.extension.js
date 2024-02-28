@@ -1,6 +1,5 @@
 
-
-export const dayBefore = function (d: Date){
+export const dayBefore = function (d){
     const dayBefore = new Date(d);
     dayBefore.setDate(d.getDate()-1);
     return dayBefore;

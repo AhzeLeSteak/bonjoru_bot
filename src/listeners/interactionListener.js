@@ -1,15 +1,14 @@
-import {ChatInputCommandInteraction, Client, Interaction} from "discord.js";
-import {COMMANDS} from "../commands/commands";
+import {COMMANDS} from '../commands/commands.js';
 
-export default (client: Client): void => {
-    client.on("interactionCreate", async (interaction: Interaction) => {
+export default (client) => {
+    client.on("interactionCreate", async (interaction) => {
         if (interaction.isChatInputCommand()) {
-            await handleSlashCommand(client, interaction as ChatInputCommandInteraction);
+            await handleSlashCommand(client, interaction);
         }
     });
 };
 
-const handleSlashCommand = async (client: Client, interaction: ChatInputCommandInteraction): Promise<void> => {
+const handleSlashCommand = async (client, interaction) => {
     const slashCommand = COMMANDS.find(c => c.name === interaction.commandName);
     if (!slashCommand) {
         await interaction.followUp({ content: "An error has occurred" });
