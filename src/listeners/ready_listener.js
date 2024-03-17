@@ -11,6 +11,6 @@ export const readyListener = (client) => {
         console.log('Commandes disonibles :');
         COMMANDS.forEach(c => console.log(`- ${c.name}`));
 
-        squirdle(client);
+        return squirdle(client);
     })
 }

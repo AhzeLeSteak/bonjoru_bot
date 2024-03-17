@@ -1,4 +1,4 @@
-import {getBilan} from '../message_handlers/vingtDeuxHandler.js';
+import {getBilan} from '../message_handlers/vingt_deux_handler.js';
 
 export const STREAK_ALL = {
     name: 'streak_all',

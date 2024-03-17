@@ -1,5 +1,5 @@
-import {dayBefore, epochDays, next22h22, previous22h22} from "./Date.extension.js";
-import { is_content_2222, created_at_2222 } from "./Message.extension.js";
+import './Date.polyfill.js';
+import './Message.polyfill.js';
 
 
 export const getStreakOfUser = async(channel, userId, client) => {
@@ -19,7 +19,7 @@ async function get_last_2222_messages_of_users(channel, userIds, client){
     const today_at_2222 = new Date();
     today_at_2222.setHours(22, 22, 0, 0);
     if (next22h22 <= today_at_2222)
-        next22h22 = dayBefore(next22h22);
+        next22h22 = next22h22.dayBefore();
     next22h22.setHours(22, 22, 0, 0);
 
     let last_messages = await get_messages_until(channel, next22h22);
@@ -35,12 +35,12 @@ async function get_last_2222_messages_of_users(channel, userIds, client){
         }
 
         userIds = userIds.filter(id => has_correct_message(last_messages, [id])); //filtrage des utilisateurs qui n'ont pas de message valide
-        next22h22 = dayBefore(next22h22);
+        next22h22 = next22h22.dayBefore();
         const last_message = last_messages.sort((a, b) => a.createdAt > b.createdAt ? 1 : -1).shift();
         last_messages = await get_messages_until(channel, next22h22, last_message.id); // fetch les messages jusqu'à 22h22 la veille
         messages = [...messages, ...last_messages];
     }
-    messages = messages.filter(m => is_content_2222(m) && created_at_2222(m));
+    messages = messages.filter(m => m.is_2222_valid());
     return {bilan, messages};
 }
 
@@ -49,7 +49,7 @@ async function get_last_2222_messages_of_users(channel, userIds, client){
 * @param userIds {string[]}
 */
 const has_correct_message = (messages, userIds) =>
-    messages.some(m => userIds.includes(m.author.id) && is_content_2222(m) && created_at_2222(m));
+    messages.some(m => userIds.includes(m.author.id) && m.is_2222_valid());
 
 function get_bilan(messages, userIds, client) {
     const bilan = messages.find(message => message.author.id === client.user.id && message.content.toLowerCase().includes("bilan"));
@@ -90,20 +90,14 @@ async function get_messages_until(channel, until, from) {
 }
 
 function calculateStreak(usersId, bilan, messages){
-    console.log({bilan})
     messages.sort((a, b) => a.createdAt > b.createdAt ? 1 : -1);
-    const oldest_date_index = epochDays(previous22h22(bilan ? bilan.date : messages[0].createdAt));
+    const oldest_date_index = (bilan ? bilan.date : messages[0].createdAt).previous22h22().epochDays();
     const streakMap = new Map();
     for(let userId of usersId){
-        let user_messages = messages.filter(m => m.author.id === userId);
-        
-        console.log(userId);
-        user_messages.forEach(m => console.log(m.createdAt.toLocaleDateString(), m.content));
-        
-        const user_messages_indexes = user_messages.map(m => epochDays(m.createdAt));
-        
+        const user_messages_indexes = messages.filter(m => m.author.id === userId)
+                                               .map(m => m.createdAt.epochDays());
         let streak = 0;
-        let start_date = epochDays(previous22h22(new Date()));
+        let start_date = new Date().previous22h22().epochDays();
         while(user_messages_indexes.includes(start_date)){
             streak++;
             start_date--;

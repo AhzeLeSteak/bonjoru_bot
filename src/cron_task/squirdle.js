@@ -1,4 +1,3 @@
-import {dayAfter} from '../utils/Date.extension.js';
 
 const HEURE_ENVOI = 8;
 const URL_SQUIRDLE = 'https://squirdle.fireblend.com/daily.html';
@@ -15,7 +14,7 @@ const send_squirdle = (channel) =>  {
     //next_send_date.setMinutes(now.getMinutes()+1, 0, 0);
     next_send_date.setHours(HEURE_ENVOI, 0, 0, 0);
     if(now > next_send_date)
-        next_send_date = dayAfter(next_send_date);
+        next_send_date = next_send_date.dayAfter();
 
     console.log(`Prochain envoi du lien squirdle: ${next_send_date.toLocaleString()}`)
 

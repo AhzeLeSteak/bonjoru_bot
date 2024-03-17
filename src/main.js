@@ -2,9 +2,9 @@ import {Client} from 'discord.js';
 import dotenv from 'dotenv';
 import path from 'path';
 
-import {readyListener} from './listeners/readyListener.js';
-import messageListener from './listeners/messageListener.js';
-import interactionCreate from './listeners/interactionListener.js'
+import {readyListener} from './listeners/ready_listener.js';
+import messageListener from './listeners/message_listener.js';
+import interactionCreate from './listeners/interaction_listener.js'
 
 const root = path.resolve('./.env')
 dotenv.config({path: root})

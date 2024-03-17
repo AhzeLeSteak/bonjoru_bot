@@ -1,4 +1,4 @@
 node_modules
 .env
 .idea
-.scratch.js
+scratch.js

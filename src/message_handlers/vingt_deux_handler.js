@@ -1,6 +1,5 @@
-import {nextMinute} from '../utils/Date.extension.js';
-import {created_at_2222, is_content_2222} from '../utils/Message.extension.js';
 import {getStreakOfUsers} from "../utils/calculate_streak.js";
+import '../utils/Message.polyfill.js';
 
 /**
 * @type {Map<string, Set<EmbedAuthorData>>}
@@ -9,7 +8,7 @@ let chanToUsers = new Map();
 
 
 export default async(message, client) => {
-    if(!is_content_2222(message) || !created_at_2222(message))
+    if(!message.is_content_2222() || !message.created_at_2222())
         return;
 
     const chanID = message.channelId;
@@ -31,7 +30,7 @@ export default async(message, client) => {
         if(!bilan) return console.error(new Error("SHOULD NOT HAPPEN"));
         channel.send(`GG !\n${bilan}`);
         chanToUsers.delete(chanID)
-    }, nextMinute(message.createdAt).getTime() - message.createdAt.getTime())
+    }, (message.createdAt.getTime() - message.createdAt.getTime()).nextMinute())
 }
 
 export async function getBilan(channel, userIds, client){

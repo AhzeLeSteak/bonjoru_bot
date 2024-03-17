@@ -1,7 +1,7 @@
-import copHandler from '../message_handlers/copHandler.js';
-import nexaleHandler from '../message_handlers/nexaleHandler.js';
-import vingtDeuxHandler from '../message_handlers/vingtDeuxHandler.js';
-import theGameHandler from '../message_handlers/theGameHandler.js';
+import copHandler from '../message_handlers/cop_handler.js';
+import nexaleHandler from '../message_handlers/nexale_handler.js';
+import vingtDeuxHandler from '../message_handlers/vingt_deux_handler.js';
+import theGameHandler from '../message_handlers/the_game_handler.js';
 
 const MESSAGE_HANDLERS = [copHandler, nexaleHandler, theGameHandler, vingtDeuxHandler];
 
