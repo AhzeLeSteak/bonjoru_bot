@@ -10,6 +10,6 @@ export default (client) => {
         if(message.author.bot || !message.inGuild())
             return;
         await message.fetch();
-        MESSAGE_HANDLERS.forEach(h => h(message));
+        MESSAGE_HANDLERS.forEach(h => h(message, client));
     })
 }

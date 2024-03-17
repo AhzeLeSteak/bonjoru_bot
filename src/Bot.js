@@ -14,7 +14,7 @@ console.log(`Parsing ${root}`);
 
 
 const client = new Client({
-    intents: [1, 1<<1, 1<<3, 1<<9, 1<<10, 1<<12]
+    intents: [1, 1<<1, 1<<3, 1<<7, 1<<8, 1<<9, 1<<10, 1<<12]
 });
 
 readyListener(client);
