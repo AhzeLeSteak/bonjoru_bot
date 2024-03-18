@@ -1,12 +1,18 @@
-import {getStreakOfUsers} from "../utils/calculate_streak.js";
+import '../utils/Date.polyfill.js';
 import '../utils/Message.polyfill.js';
+
+import {getStreakOfUsers} from "../utils/calculate_streak.js";
+import { Message, Client } from "discord.js";
 
 /**
 * @type {Map<string, Set<EmbedAuthorData>>}
  */
 let chanToUsers = new Map();
 
-
+/**
+ * @param message {Message}
+ * @param client {Client}
+ */
 export default async(message, client) => {
     if(!message.is_content_2222() || !message.created_at_2222())
         return;
@@ -30,7 +36,7 @@ export default async(message, client) => {
         if(!bilan) return console.error(new Error("SHOULD NOT HAPPEN"));
         channel.send(`GG !\n${bilan}`);
         chanToUsers.delete(chanID)
-    }, (message.createdAt.getTime() - message.createdAt.getTime()).nextMinute())
+    }, message.createdAt.nextMinute().getTime() - message.createdAt.getTime());
 }
 
 export async function getBilan(channel, userIds, client){

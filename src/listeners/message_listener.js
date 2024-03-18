@@ -5,6 +5,9 @@ import theGameHandler from '../message_handlers/the_game_handler.js';
 
 const MESSAGE_HANDLERS = [copHandler, nexaleHandler, theGameHandler, vingtDeuxHandler];
 
+/**
+ * @param client {Client}
+ */
 export default (client) => {
     client.on('messageCreate', async(message) => {
         if(message.author.bot || !message.inGuild())

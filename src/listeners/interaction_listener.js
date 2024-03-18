@@ -1,6 +1,11 @@
 import {COMMANDS} from '../commands/commands.js';
 
+import { Interaction, Client } from 'discord.js';
+
 export default (client) => {
+    /**
+     * @param interaction {Interaction}
+     */
     client.on("interactionCreate", async (interaction) => {
         if (interaction.isChatInputCommand()) {
             await handleSlashCommand(client, interaction);
@@ -8,6 +13,12 @@ export default (client) => {
     });
 };
 
+/**
+ * 
+ * @param client {Client} 
+ * @param interaction {Interaction}
+ * @returns 
+ */
 const handleSlashCommand = async (client, interaction) => {
     const slashCommand = COMMANDS.find(c => c.name === interaction.commandName);
     if (!slashCommand) {

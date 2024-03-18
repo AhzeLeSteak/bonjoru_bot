@@ -1,5 +1,10 @@
 import '../utils/Message.polyfill.js';
 
+import { Message } from 'discord.js';
+
+/**
+ * @param message {Message}
+ */
 export default async(message) => {
     if(!message.is_content_2222() || message.created_at_2222())
         return;

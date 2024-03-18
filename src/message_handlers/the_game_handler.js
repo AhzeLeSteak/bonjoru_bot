@@ -1,3 +1,8 @@
+import { Message } from "discord.js";
+
+/**
+ * @param message {Message}
+ */
 export default async(message) => {
     const random = Math.ceil(Math.random()*8192) ;
     console.log(`Randomz ${message.author.username} - ${random}`)
