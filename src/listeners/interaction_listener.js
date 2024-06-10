@@ -1,11 +1,13 @@
+import { Client, Interaction } from 'discord.js';
+
 import {COMMANDS} from '../commands/commands.js';
+import { logError } from '../utils/logError.js';
 
-import { Interaction, Client } from 'discord.js';
-
+/**
+ * Lance la méthode de gestion des commande lors de la création d'une intéraction
+ * @param {Client} client
+ */
 export default (client) => {
-    /**
-     * @param interaction {Interaction}
-     */
     client.on("interactionCreate", async (interaction) => {
         if (interaction.isChatInputCommand()) {
             await handleSlashCommand(client, interaction);
@@ -14,10 +16,9 @@ export default (client) => {
 };
 
 /**
- * 
+ * Trouve la commande ayant le nom correspondant et l'exécute
  * @param client {Client} 
  * @param interaction {Interaction}
- * @returns 
  */
 const handleSlashCommand = async (client, interaction) => {
     const slashCommand = COMMANDS.find(c => c.name === interaction.commandName);
@@ -28,10 +29,10 @@ const handleSlashCommand = async (client, interaction) => {
 
     try{
         await interaction.deferReply();
-        slashCommand.run(client, interaction);
+        await slashCommand.run(client, interaction);
     }
     catch (e){
-        console.error(e);
-        await interaction.deleteReply('Une erreur est survenue :( ')
+        await interaction.followUp('Une erreur est survenue :/');
+        logError(e, client);
     }
 };

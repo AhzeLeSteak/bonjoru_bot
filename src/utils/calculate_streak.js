@@ -1,26 +1,54 @@
+import {Client, Message, TextChannel} from 'discord.js';
+
 import './Date.polyfill.js';
 import './Message.polyfill.js';
 
+/**
+ * @typedef {{date: Date,map: Map<string, number>}} Bilan
+ */
 
+
+/**
+ * Retourne la streak d'un utilisateur pour un channel donnée
+ * @param {TextChannel} channel 
+ * @param {string} userId 
+ * @param {Client} client 
+ * @returns {number}
+ */
 export const getStreakOfUser = async(channel, userId, client) => {
-    const streak = await getStreakOfUsers(channel, [userId], client);
+    const streak = await getStreakOfUsers(channel, [userId], client, false);
     return streak.get(userId);
 }
 
 
-export async function getStreakOfUsers(channel, userIds, client) {
+/**
+ * Retourne la streaks des utilisateurs, pour le channel donné, sous forme de map
+ * @param {TextChannel} channel 
+ * @param {string[]} userIds 
+ * @param {Client} client 
+ * @param {boolean} count_streak_break Indique si on inclue les utilisateurs ayant brisé leur streak, dans quel cas elle vaudra -1
+ * @returns {Map<string, number>} map user id -> streak
+ */
+export async function getStreakOfUsers(channel, userIds, client, count_streak_break = false) {
     const {bilan, messages} = await get_last_2222_messages_of_users(channel, userIds, client);
-    return calculateStreak(userIds, bilan, messages);
+    return calculateStreak(userIds, bilan, messages, count_streak_break);
 }
 
 
+/**
+ * Fetch et renvoie les messages dans un channel donné, pour les utilisateurs données
+ * jusqu'à là date où aucun des utilisateurs n'a envoyé de message 22h22-valide
+ * ou jusqu'à ce que l'on trouve un bilan
+ * @param {TextChannel} channel 
+ * @param {string[]} userIds 
+ * @param {Client} client 
+ * @returns 
+ */
 async function get_last_2222_messages_of_users(channel, userIds, client){
-    let next22h22 = new Date();
     const today_at_2222 = new Date();
     today_at_2222.setHours(22, 22, 0, 0);
-    if (next22h22 <= today_at_2222)
-        next22h22 = next22h22.dayBefore();
-    next22h22.setHours(22, 22, 0, 0);
+
+    let next22h22 = new Date().next22h22();
 
     let last_messages = await get_messages_until(channel, next22h22);
     let messages = [...last_messages];
@@ -45,27 +73,46 @@ async function get_last_2222_messages_of_users(channel, userIds, client){
 }
 
 /**
-* @param messages
-* @param userIds {string[]}
-*/
+ * Indique si le tableau contient au moins un message créé par l'un des utilisateurs et étant 22h22-valide
+ * @param {Message<true>[]} messages 
+ * @param {string[]} userIds 
+ * @returns {boolean}
+ */
 const has_correct_message = (messages, userIds) =>
     messages.some(m => userIds.includes(m.author.id) && m.is_2222_valid());
 
-function get_bilan(messages, userIds, client) {
+
+/**
+ * Cherche un bilan envoyé par bonjoru dans les messages passés en paramètre
+ * S'il y en a un, on le parse pour obtenir les streaks des utilisateurs
+ * @param {Message<true>[]} messages 
+ * @param {Client} client 
+ * @returns {Bilan |false} bilan
+ */
+function get_bilan(messages, client) {
     const bilan = messages.find(message => message.author.id === client.user.id && message.content.toLowerCase().includes("bilan"));
-    if(bilan){
-        const streakMap = new Map();
-        for(let [_, userId, streak] of bilan.content.matchAll(/<@(\d+)> : (\d+)/gm))
-            streakMap.set(userId, +streak);
-        return {
-            date: bilan.createdAt,
-            map: streakMap
-        }
+    if(!bilan) return false;
+    
+    const streakMap = new Map();
+    for(let [_, userId, streak] of bilan.content.matchAll(/<@(\d+)> : (\d+)/gm))
+        streakMap.set(userId, +streak);
+    return {
+        date: bilan.createdAt,
+        map: streakMap
     }
-    return false;
 }
 
-async function get_messages_until(channel, until, from) {
+/**
+ * Fetch et renvoie la liste de tous les messages du channel créés
+ * de la date actuelle au dernier 22h22 (de manière antéchronologique)
+ * Si l'argument from est précisé, on ne part pas de la date actuelle
+ * mais du message ayant cet id  
+ * @param {TextChannel} channel Le channel sur lequel fetch les message
+ * @param {Date} until La date min pour les message à fetch
+ * @param {string} from L'id du message de départ (facultatif) 
+ * @returns {Promise<Message<true>[]>}
+ */
+async function get_messages_until(channel, until, from = undefined) {
     let acc = [];
     const options = {
         limit: 100,
@@ -89,23 +136,51 @@ async function get_messages_until(channel, until, from) {
     return acc;
 }
 
-function calculateStreak(usersId, bilan, messages){
+
+/**
+ * Calcule la streak des utilisateurs selon une liste de message et un bilan
+ * @param {string[]} usersId 
+ * @param {Bilan | false} bilan Dernier bilan de streak (faux si aucun bilan existant)
+ * @param {Message<true>[]} messages Liste des messages des utilisateurs
+ * @param {boolean} count_streak_break Indique si on inclue les utilisateurs ayant brisé leur streak, dans quel cas elle vaudra -1
+ * @returns {Map<string, number>} 
+ */
+function calculateStreak(usersId, bilan, messages, count_streak_break = false){
     messages.sort((a, b) => a.createdAt > b.createdAt ? 1 : -1);
     const oldest_date_index = (bilan ? bilan.date : messages[0].createdAt).previous22h22().epochDays();
+    /** @type Map<string, number> */
     const streakMap = new Map();
     for(let userId of usersId){
+        
+        // Pour chaque utilisateur, on map ses messages à un leur epochDay
+        // E.g. [17/08, 18/08, 19/08] devient [16342, 16343, 16344]
         const user_messages_indexes = messages.filter(m => m.author.id === userId)
                                                .map(m => m.createdAt.epochDays());
         let streak = 0;
-        let start_date = new Date().previous22h22().epochDays();
-        while(user_messages_indexes.includes(start_date)){
+        const start_date = new Date().previous22h22().epochDays();
+        let travel_date = start_date;
+
+        // On part de l'epochDay de la date actuelle, et on décrément tant qu'il est compris dans le tableau user_messages_indexes
+        while(user_messages_indexes.includes(travel_date)){
             streak++;
-            start_date--;
+            travel_date--;
         }
         
-        if(start_date === oldest_date_index && bilan && bilan.map.has(userId))
+        // Si on a décrémenté jusqu'à la date la plus vielle et qu'un bilan existen on ajoute le score du bilan au streak
+        if(travel_date === oldest_date_index && bilan && bilan.map.has(userId))
             streak += bilan.map.get(userId);
         
+        // Si arrivé ici la streak vaut zero, on regarde si l'utilisateur avait une streak la veille, dans quel cas elle est brisée
+        if(count_streak_break && streak === 0){
+            let is_streak_broken = false;
+            if(bilan && oldest_date_index === start_date - 1)
+                is_streak_broken = bilan.map.has(userId) && bilan.map.get(userId) > 0;
+            else
+                is_streak_broken = user_messages_indexes.includes(start_date - 1);
+            if(is_streak_broken)
+                streak = -1;
+        }
+
         streakMap.set(userId, streak);
     }
     return streakMap;

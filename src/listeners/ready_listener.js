@@ -1,6 +1,11 @@
 import {squirdle} from '../cron_task/squirdle.js';
 import {COMMANDS} from "../commands/commands.js";
+import {Client} from 'discord.js';
 
+/**
+ * Set les commande et le statut du bot
+ * @param {Client} client 
+ */
 export const readyListener = (client) => {
     client.on('ready', async() => {
         if(!client.user || !client.application)
@@ -11,6 +16,6 @@ export const readyListener = (client) => {
         console.log('Commandes disonibles :');
         COMMANDS.forEach(c => console.log(`- ${c.name}`));
 
-        return squirdle(client);
+        await squirdle(client);
     })
 }

@@ -5,9 +5,9 @@ import {getStreakOfUsers} from "../utils/calculate_streak.js";
 import { Message, Client } from "discord.js";
 
 /**
-* @type {Map<string, Set<EmbedAuthorData>>}
+* @type {string[]}
  */
-let chanToUsers = new Map();
+const channels = [];
 
 /**
  * @param message {Message}
@@ -20,31 +20,62 @@ export default async(message, client) => {
     const chanID = message.channelId;
     message.react(process.env.NERD_EMOTE);
 
-    const isChanProcessed = chanToUsers.has(chanID);
 
-    if(!isChanProcessed)
-        chanToUsers.set(chanID, new Set());
-    chanToUsers.get(chanID).add(message.author.id);
-
-    if(isChanProcessed)
+    if(!channels.includes(chanID))
+        channels.push(chanID);
+    else
         return;
 
     const channel = await message.channel.fetch();
     setTimeout(async() => {
-        if(!chanToUsers.get(chanID)) return;
-        const bilan = await getBilan(channel, [...chanToUsers.get(chanID).values()], client);
+        const bilan = await getBilan(channel, channel.members.map(u => u.id), client, true);
         if(!bilan) return console.error(new Error("SHOULD NOT HAPPEN"));
         channel.send(`GG !\n${bilan}`);
-        chanToUsers.delete(chanID)
-    }, message.createdAt.nextMinute().getTime() - message.createdAt.getTime());
+        channels.length = 0;
+    }, message.createdAt.nextMinute().getTime() - message.createdAt.getTime() + 2*1000);
 }
 
-export async function getBilan(channel, userIds, client){
-    const res = await getStreakOfUsers(channel, userIds, client);
-    if([...res.values()].every(streak => streak === 0))
+export async function getBilan(channel, userIds, client, streak_break = false){
+    const streak_map = await getStreakOfUsers(channel, userIds, client, streak_break);
+
+    if([...streak_map.values()].every(streak => streak === 0))
         return false
-    const tags = [...res.keys()]
-        .filter(userId => res.get(userId))
-        .map(userId => `<@${userId}> : ${res.get(userId)}`)
-    return `Bilan des streaks :\n${tags.join('\n')}`;
+
+    const streaks = [];
+    const users_streak_break = [];
+    const sorted_users_ids = [...streak_map.keys()].sort((a, b) => streak_map.get(a) < streak_map.get(b) ? 1 : -1);
+
+    let placement = 0;
+    let last_score = -1;
+
+    for(let userId of sorted_users_ids){
+        const streak = streak_map.get(userId);
+        if(streak < last_score) placement++;
+        const prefix = [':first_place: ', ':second_place: ', ':third_place: ', ''][Math.min(3, placement)];
+        if(typeof streak !== 'number') return;
+        if(streak > 0)
+            streaks.push(`${prefix}<@${userId}> : ${streak}`);
+        else if(streak === -1)
+            users_streak_break.push(userId);
+        last_score = streak;
+    }
+
+    const summary_broken_streaks = get_summary_broken_streaks(users_streak_break);
+
+    return `Bilan des streaks :\n${streaks.join('\n')}${summary_broken_streaks}`;
+}
+
+function get_summary_broken_streaks(usersId){
+    if(usersId.length === 0)
+        return '';
+
+    let summary_broken_streaks = `\n`;
+    for(let i = 0; i < usersId.length; i++){
+        if(i > 0)
+            summary_broken_streaks += i === usersId.length - 1 ? ' et ' : ' , ';
+        summary_broken_streaks += `<@${usersId[i]}>`;
+    }
+    const plural = usersId.length > 1
+    summary_broken_streaks += ' ' + [plural ? '(les merdes)' : '(la merde)', plural ? 'ont' : 'a', 'brisé', plural ? 'leur' : 'sa', 'streak !'].join(' ');
+    return summary_broken_streaks;
 }

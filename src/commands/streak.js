@@ -10,6 +10,6 @@ export const STREAK = {
         const channel = await interaction.channel.fetch();
         //const channel = (await client.channels.fetch(process.env.CHANNEL_2222_ID)) as TextChannel;
         const streak = await getStreakOfUser(channel, interaction.user.id, client);
-            await interaction.followUp({content: `Streak de ${interaction.user.username}: **${streak}**`});
+        await interaction.followUp({content: `Streak de ${interaction.user.username}: **${streak}**`});
     }
 }

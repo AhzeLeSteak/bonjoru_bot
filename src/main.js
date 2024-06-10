@@ -21,5 +21,11 @@ readyListener(client);
 interactionCreate(client);
 messageListener(client);
 
-client.login(token);
-console.log(`bonjoru_bot started`);
+
+async function main(){
+    await client.login(token);
+    console.log(`bonjoru_bot started`);
+}
+
+
+main()

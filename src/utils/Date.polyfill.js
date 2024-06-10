@@ -33,6 +33,10 @@ Date.prototype.nextMinute = function (){
     return nextMinute;
 }
 
+/**
+ * Renvoie le nombre de jours écoulées depuis la journée epoch (01/01/1970)
+ * @returns {number}
+ */
 Date.prototype.epochDays = function (){
     return Math.floor(this/8.64e7);
 }
