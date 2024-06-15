@@ -48,24 +48,24 @@ async function get_last_2222_messages_of_users(channel, userIds, client){
     const today_at_2222 = new Date();
     today_at_2222.setHours(22, 22, 0, 0);
 
-    let next22h22 = new Date().next22h22();
+    let previous22h22 = new Date().previous22h22();
 
-    let last_messages = await get_messages_until(channel, next22h22);
+    let last_messages = await get_messages_until(channel, previous22h22);
     let messages = [...last_messages];
     let bilan = null;
 
     //tant qu'au moins un utilisateur du tableau utilisateur à un message 22h22 valide dans les messages fetched
     while (has_correct_message(last_messages, userIds)) {
-        bilan = get_bilan(last_messages, userIds, client);
+        bilan = get_bilan(last_messages, client);
         if(bilan){
             messages = messages.filter(m => m.createdAt > bilan.date);
             break;
         }
 
         userIds = userIds.filter(id => has_correct_message(last_messages, [id])); //filtrage des utilisateurs qui n'ont pas de message valide
-        next22h22 = next22h22.dayBefore();
+        previous22h22 = previous22h22.dayBefore();
         const last_message = last_messages.sort((a, b) => a.createdAt > b.createdAt ? 1 : -1).shift();
-        last_messages = await get_messages_until(channel, next22h22, last_message.id); // fetch les messages jusqu'à 22h22 la veille
+        last_messages = await get_messages_until(channel, previous22h22, last_message.id); // fetch les messages jusqu'à 22h22 la veille
         messages = [...messages, ...last_messages];
     }
     messages = messages.filter(m => m.is_2222_valid());
@@ -146,10 +146,15 @@ async function get_messages_until(channel, until, from = undefined) {
  * @returns {Map<string, number>} 
  */
 function calculateStreak(usersId, bilan, messages, count_streak_break = false){
-    messages.sort((a, b) => a.createdAt > b.createdAt ? 1 : -1);
-    const oldest_date_index = (bilan ? bilan.date : messages[0].createdAt).previous22h22().epochDays();
     /** @type Map<string, number> */
     const streakMap = new Map();
+    usersId.forEach(id => streakMap.set(id, 0));
+
+    if(messages.length === 0 && !bilan) return streakMap;
+    
+    messages.sort((a, b) => a.createdAt > b.createdAt ? 1 : -1);
+    const oldest_date_index = (bilan ? bilan.date : messages[0].createdAt).previous22h22().epochDays();
+   
     for(let userId of usersId){
         
         // Pour chaque utilisateur, on map ses messages à un leur epochDay

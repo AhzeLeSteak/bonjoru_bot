@@ -1,5 +1,6 @@
 import * as path from "path";
 import * as dotenv from "dotenv";
+import * as rl from 'readline-sync';
 
 import {NodeSSH} from 'node-ssh';
 import Application from 'ssh-deploy-release';
@@ -16,51 +17,51 @@ const options = {
         'release.tar.gz'
     ],
     host: process.env.DEPLOY_IP,
-    username: process.env.DEPLOY_USER,
-    password: process.env.DEPLOY_PASSWORD,
-    deployPath: process.env.DEPLOY_PATH,
+    deployPath: process.env.DEPLOY_PATH + process.env.DEPLOY_DIR,
     currentReleaseLink: 'app'
 };
 
+
 async function main(){
-    const ssh = new NodeSSH()
+    const username = rl.question('User : ');
+    const password = rl.question('Password : ');
+
+    const ssh = new NodeSSH();
     await ssh.connect({
         host: process.env.DEPLOY_IP,
-        username: process.env.DEPLOY_USER,
+        username,
         port: 22,
-        password: process.env.DEPLOY_PASSWORD,
+        password: '8wa8a1a3a'
     });
 
-    const sudo = async(command, relative_path = '') => {
-        const {stderr} = await ssh.exec(`sudo -S ${command}`, [], {
-            cwd: `${process.env.DEPLOY_PATH}/${relative_path}`,
-            stdin: `${process.env.DEPLOY_PASSWORD}\n\n`,
-            stream: 'both'
-        });
-        if(!stderr.startsWith('[sudo] password for '))
-            console.log(stderr);
-    }
+    const sudo = async(command, relative_path = '') => 
+        username === 'root'
+            ? await ssh.exec(command, [], {cwd: `${process.env.DEPLOY_PATH}/${relative_path}`})
+            : await ssh.exec(`sudo -S ${command}`, [], {
+                cwd: `${process.env.DEPLOY_PATH}/${relative_path}`.replace('//', '/'),
+                stdin: `${password}\n\n`,
+                stream: 'both'
+            });
 
-    await sudo(`rm -r bonjoru_bot`, '..');
+    await sudo('echo coucou')
+
+    
     console.log('Erase previous files');
+    await sudo(`rm -rf bonjoru_bot`);
 
-    const deployer = new Application(options);
+    const deployer = new Application({...options, username, password});
     await new Promise(resolve =>
-        deployer.deployRelease(() => {
-            console.log('Sources deployed !')
-            resolve();
-        })
+        deployer.deployRelease(() => resolve(console.log('Sources deployed !')))
     );
 
 
     console.log('Installing node modules...');
-    await sudo(`npm i`, 'app');
+    await sudo(`npm i`, process.env.DEPLOY_DIR + '/app');
     console.log('Installed node modules');
 
     console.log('Restarting service...');
-    await sudo(`sudo -S systemctl restart bonjoru_bot`);
+    await sudo(`systemctl restart bonjoru_bot`);
     console.log('Service restarted !');
-    process.exit()
 }
 
 main();

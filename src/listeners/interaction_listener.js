@@ -1,4 +1,4 @@
-import { Client, Interaction } from 'discord.js';
+import { Client } from 'discord.js';
 
 import {COMMANDS} from '../commands/commands.js';
 import { logError } from '../utils/logError.js';
